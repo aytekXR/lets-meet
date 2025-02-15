@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-function EventDetails() {
+const EventDetails = () => {
   const { eventCode } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,7 +14,7 @@ function EventDetails() {
     custom_availability: ''
   });
   const [error, setError] = useState('');
-  const [message, setMessage] = useState(location.state?.message || '');
+  const [message] = useState('');
   const [showAdminInfo, setShowAdminInfo] = useState(true);
   const [copySuccess, setCopySuccess] = useState('');
 
@@ -238,6 +238,6 @@ function EventDetails() {
       </div>
     </div>
   );
-}
+};
 
 export default EventDetails; 
