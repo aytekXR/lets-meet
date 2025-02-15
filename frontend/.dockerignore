@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+# Don't ignore the dist directory if it exists locally
+# dist
+.git
+*.md
+.gitignore 
