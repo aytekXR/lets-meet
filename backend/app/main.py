@@ -7,6 +7,7 @@ from fastapi.responses import Response
 from icalendar import Calendar, Event as CalendarEvent
 import random
 import string
+from .database import engine
 
 app = FastAPI()
 
@@ -20,7 +21,7 @@ app.add_middleware(
 )
 
 # Create database tables
-models.Base.metadata.create_all(bind=database.engine)
+models.Base.metadata.create_all(bind=engine)
 
 def get_db():
     db = database.SessionLocal()
