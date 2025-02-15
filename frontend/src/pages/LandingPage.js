@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
-function LandingPage() {
+const LandingPage = () => {
   const [eventCode, setEventCode] = useState('');
-  const [showCodeInput, setShowCodeInput] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -12,67 +11,76 @@ function LandingPage() {
     navigate('/create');
   };
 
-  const handleParticipate = () => {
-    setShowCodeInput(true);
-  };
+  const handleJoinEvent = async (e) => {
+    e.preventDefault();
+    if (!eventCode.trim()) {
+      setError('Please enter an event code');
+      return;
+    }
 
-  const handleSubmitCode = async () => {
     try {
-      const response = await axios.get(`/api/events/${eventCode}`);
-      if (response.data) {
-        navigate(`/event/${eventCode}`, { state: { message: 'Event found!' } });
-      }
+      await api.get(`/api/events/${eventCode}`);
+      navigate(`/event/${eventCode}`);
     } catch (error) {
-      setError('No event found with the given code');
+      setError('No event found with this code');
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Welcome to Let's Meet. Let's Meet! 
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Let's Meet
           </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Schedule group meetings with ease
+          </p>
         </div>
+
         <div className="mt-8 space-y-6">
-          <div className="flex flex-col gap-4">
-            <button
-              onClick={handleCreateEvent}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-            >
-              Generate new event
-            </button>
-            <button
-              onClick={handleParticipate}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
-            >
-              Participate in an event
-            </button>
-          </div>
-          
-          {showCodeInput && (
-            <div className="mt-4">
-              <input
-                type="text"
-                value={eventCode}
-                onChange={(e) => setEventCode(e.target.value)}
-                placeholder="Enter event code"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-              {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
-              <button
-                onClick={handleSubmitCode}
-                className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-              >
-                Submit
-              </button>
+          <button
+            onClick={handleCreateEvent}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            Create New Event
+          </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
             </div>
-          )}
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                Or join an existing event
+              </span>
+            </div>
+          </div>
+
+          <form onSubmit={handleJoinEvent}>
+            <input
+              type="text"
+              value={eventCode}
+              onChange={(e) => setEventCode(e.target.value)}
+              placeholder="Enter event code"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            />
+            {error && (
+              <p className="mt-2 text-sm text-red-600">
+                {error}
+              </p>
+            )}
+            <button
+              type="submit"
+              className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+            >
+              Join Event
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default LandingPage; 

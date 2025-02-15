@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const EventDetails = () => {
   const { eventCode } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [event, setEvent] = useState(null);
   const [availability, setAvailability] = useState({
     participant_name: '',
